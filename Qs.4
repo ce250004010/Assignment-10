@@ -1,0 +1,61 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+struct SalesRecord {
+std::string month;
+float amount;
+};
+
+int main() {
+SalesRecord sales[12];
+
+for (int i = 0; i < 12; ++i) {
+cout << "Enter month name: ";
+cin >> sales[i].month;
+cout << "Enter sales amount for " << sales[i].month << ": ";
+cin >> sales[i].amount;
+}
+
+
+ofstream outfile("sales_data.txt");
+if (!outfile) {
+cerr << "Error opening file for writing.\n";
+return 1;
+}
+for (int i = 0; i < 12; ++i) {
+outfile << sales[i].month << " " << sales[i].amount << "\n";
+}
+outfile.close();
+
+
+SalesRecord readSales[12];
+ifstream infile("sales_data.txt");
+if (!infile) {
+cerr << "Error opening file for reading.\n";
+return 1;
+}
+int count = 0;
+while (count < 12 && infile >> readSales[count].month >> readSales[count].amount) {
+++count;
+}
+infile.close();
+
+
+float total = 0;
+for (int i = 0; i < 12; ++i) {
+total += readSales[i].amount;
+}
+float average = total / 12;
+
+
+cout << "Months with sales above yearly average (" << average << "):";
+for (int i = 0; i < 12; ++i) {
+if (readSales[i].amount > average) {
+cout << readSales[i].month << "\n";
+}
+}
+
+return 0;
+}
